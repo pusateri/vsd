@@ -8,6 +8,7 @@ Otherwise, you can use MPEG4 Video (.mp4, .m4v, etc.)
 This project is based on Django 1.3.1 and Python 2.7.
 
 It includes several management commands:
+
 1. Use 'load_dl2' to import an XML file from Delicious Library 2 containing all of the videos.
 2. Use 'build_tags' to create searchable tags based on
 3. Use 'fetch_covers' to look for cover art at Amazon.
