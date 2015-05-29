@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<style type="text/css">
+
+body {
+    background-color: #f2f2f2;
+    color: #306;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.search {
+    float: right;
+}
+.sortby {
+    float: left;
+}
+#sortby_select {
+    font-size: 16;
+}
+#sortby_submit {
+    font-size: 16;
+}
+#search_text {
+    width: 300px;
+    font-size: 16;
+}
+#search_submit {
+    font-size: 16;
+}
+#search_string {
+    color: red;
+}
+#return {
+    color: red;
+}
+h1 {
+    font-size: 48;
+    text-align: center;
+    clear: both;
+}
+h2 {
+    font-size:36;
+    text-align: center;
+}
+.hovergallery {
+    vertical-align: top;
+}
+.hovergallery p {
+    text-align: center;
+    color: #306;
+}
+#title {
+    height: 4em;
+}
+#detail {
+    height: 1.5em;
+}
+.cover {
+    float: left;
+    width: 200px;
+    height: 402px;
+    background-color: #DDD;
+    margin: 10px 10px 10px 10px;
+    border-radius: 9px;
+    -moz-border-radius: 9px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+}
+.cover img {
+    display: block;
+    height: 256;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}
+.footer h2 {
+    clear: both;
+}
+.footer a {
+    color: #306;
+}
+.footer p {
+    text-align: center;
+}
+</style>
+<title>NRCA Video Library</title>
+</head>
+<body>
+
+<div class="sortby">
+    <form action="/sortby/" method="get">
+        <select id="sortby_select" name="key">
+            <option {% ifequal sort_key "netRating" %} selected {% endifequal %}value="netRating">Internet Rating</option>
+            <option {% ifequal sort_key "minutes" %} selected {% endifequal %}value="minutes">Length</option>
+            <option {% ifequal sort_key "locationSingularString" %} selected {% endifequal %}value="locationSingularString">Location</option>
+            <option {% ifequal sort_key "formatSingularString" %} selected {% endifequal %}value="formatSingularString">Media Format</option>
+            <option {% ifequal sort_key "theatricalDate" %} selected {% endifequal %}value="theatricalDate">Release Date</option>
+            <option {% ifequal sort_key "title" %} selected {% endifequal %}value="title">Title</option>
+        </select>
+        <input id="sortby_submit" type="submit" value="Change Sort">
+    </form>
+</div>
+<form class="search" action="/search/" method="get">
+    <input id="search_text" type="text" value="{{ query_string }}" name="q">
+    <input id="search_submit" type="submit" value="Search">
+</form>
+<h1>NRCA Video Library</h1>
+{% if query_string %}
+<h2>{{ movie_list|length }} Matching Title{{ movie_list|pluralize }} for: <span id="search_string">{{ query_string }}</span></h2>
+{% else %}
+<h2>{{ movie_list|length }} Title{{ movie_list|pluralize }}</h2>
+{% endif %}
+{% if movie_list %}
+<div class="hovergallery">
+    {% for media in movie_list %}
+        <div class="cover">
+            {% load thumbnail %}
+            {% if media.locationSingularString %}
+            <a href="/movies/{{ media.locationSingularString }}/"><img src="{{ media|thumbnail }}"/></a>
+            {% else %}
+            <a href=""><img src="{{ media|thumbnail }}"/></a>
+            {% endif %}
+            {% load truncate %}
+            <p id="title">{{ media.title|truncate:82 }}</p>
+            {% ifequal sort_key "netRating" %} <p id="detail">Rating: {{ media.netRating }}</p> {% endifequal %}
+            {% ifequal sort_key "minutes" %} <p id="detail">{{ media.minutes }} minutes</p> {% endifequal %}
+            {% ifequal sort_key "locationSingularString" %} <p id="detail">Location: {{ media.locationSingularString }}</p> {% endifequal %}
+            {% ifequal sort_key "formatSingularString" %} <p id="detail">{{ media.formatSingularString }}</p> {% endifequal %}
+            {% ifequal sort_key "theatricalDate" %} <p id="detail">{{ media.theatricalDate|date:"M Y" }}</p> {% endifequal %}
+            {% ifequal sort_key "title" %} <p id="detail">{{ media.minutes }} minutes</p> {% endifequal %}
+        </div>
+    {% endfor %}
+</div>
+{% else %}
+    <h2>No movies match. <a id="return" href="/movies">Return</a> to full library.</h2>
+{% endif %}
+<div class="footer">
+    <h2><a href="mailto:pusateri@nrcaknights.com?subject=Help with Video Library">Need help?</a></h2>
+    <p>Notice: Access to this video content is for use on campus at North Raleigh Christian Academy only</p>
+</div>
+</body>
+</html>

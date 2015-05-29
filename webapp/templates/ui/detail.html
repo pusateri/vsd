@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <link href="/images/favicon.ico" rel="icon" type="image/x-icon" />
+<style type="text/css">
+
+body {
+    background-color: #f2f2f2;
+    min-width: 1048px;
+    font-family: helvetica, sans-serif;
+    color: #555;
+}
+a {
+    text-decoration: none;
+}
+h1 {
+    text-align: center;
+    clear: both;
+}
+h2 {
+    text-align: center;
+}
+.properties {
+    padding-top: 60px;
+    clear: both;
+}
+.properties th {
+    text-align: right;
+}
+.screenings th {
+    text-align: center;
+}
+.even {
+    background-color: #DDD;
+}
+video {
+    background-color: black;
+    float: right;
+    margin-right: 1px;
+    width: 640px;
+    height: 480px;
+}
+.player {
+    background-color: black;
+    float: right;
+    margin-right: 1px;
+    width: 640px;
+    height: 480px;
+    font-weight: bold;
+}
+.player p {
+    color: white;
+    font-size: 36px;
+    text-align: center;
+    margin-top: 100px;
+}
+
+.properties p {
+    margin: 0px;
+}
+.footer h2 {
+    clear: both;
+}
+.footer a {
+    color: #ccf;
+}
+.footer p {
+    text-align: center;
+    color: #ccf;
+}
+#flip-container {
+    float: left;
+    position: relative;
+    margin: 0px 0px 0px 1px;
+    width: 220px;
+    height: 480px;
+}
+#flip-container img {
+    border-style: solid;
+    border-width: 1px;
+    border-color: gray;
+    margin-bottom: 60px;
+    -webkit-box-reflect: below 2px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.9, transparent), to(rgba(255, 255, 255, 0.3)));
+}
+.face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+}
+.ontop a {
+    visibility: visible;
+}
+
+ul.nav {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0px;
+    float: left;
+    height: 480px;
+    background-color: #EAEAEA;
+}
+ul.nav a {
+    display: block;
+    border-bottom: none;
+    padding: 10px;
+    margin: 0px;
+    background-color: #EAEAEA;
+    text-align: center;
+    font-weight: bold;
+    color: #306;
+}
+li.ontop a {
+    background-color: #CCC;
+}
+ul.tag {
+    list-style-type: none;
+    margin: 0px;
+    border: 0px;
+    padding-left: 0;
+    text-align: left;
+}
+li.tag {
+    display: inline;
+    background-color: #DDD;
+    border-radius: 15px;
+    text-align: center;
+    padding: 3px;
+    margin: 2px;
+}
+li.tag a {
+    border-radius: 15px;
+    font-size: 12pt;
+    color: #555;
+}
+li.tag:hover {
+    background-color: #FFF;
+    border-width: 1px;
+    border-style: solid;
+}
+li.edit a {
+    color: green;
+    font-weight: bold;
+}
+</style>
+ <script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
+ <script type="text/javascript" src="/static/js/jquery.json-2.2.min.js"></script>
+
+{% if image_back %}
+<script language="javascript">
+    function show_front() {
+        var element = document.getElementById("cover_front");
+        element.className="ontop face";
+        element = document.getElementById("cover_back");
+        element.className="face";
+        element = document.getElementById("button_front");
+        element.className="ontop";
+        element = document.getElementById("button_back");
+        element.className="";
+    }
+    function show_back() {
+        var element = document.getElementById("cover_front");
+        element.className="face";
+        element = document.getElementById("cover_back");
+        element.className="ontop face";
+        element = document.getElementById("button_front");
+        element.className="";
+        element = document.getElementById("button_back");
+        element.className="ontop";
+    }
+</script>
+{% endif %}
+
+<script language="javascript">
+    var dict;
+    document.oncontextmenu=function() { return false; }
+    
+    function load() {
+        function printerror(data) {
+            console.debug(data);
+        }
+        setupZoom();
+        var vid = document.getElementById("vid");
+        vid.addEventListener("play", function() {
+            dict = new Object();
+            dict.user = '{{ user }}';
+            dict.media = '{{ media.uuidString }}';
+            dict.start = vid.currentTime;
+            dict.stop = 0;
+            dict.timestamp = new Date();
+            var encoded = $.toJSON(dict);
+            $.post('/transport/', {json:encoded});
+        }, false);
+        vid.addEventListener("pause", function() {
+            dict.stop = vid.currentTime;
+            var encoded = $.toJSON(dict);
+            $.post('/transport/', {json:encoded});
+        }, false);
+        vid.addEventListener("ended", function() {
+           dict.stop = vid.currentTime;
+           var encoded = $.toJSON(dict);
+           $.post('/transport/', {json:encoded});
+        }, false);
+    }
+    function setCurrentTime(newTime) {
+        var vid = document.getElementById("vid");
+        vid.currentTime = newTime;
+    }
+</script>
+<script src="/static/js/FancyZoom.js" type="text/javascript"></script>
+<script src="/static/js/FancyZoomHTML.js" type="text/javascript"></script>
+<title>{{ media.title }}</title>
+</head>
+<body onload="load()">
+<h1>{{ media.title }}</h1>
+{% if media.subtitle %}
+    <h2>{{ media.subtitle }}</h2>
+{% endif %}
+<ul class="nav">
+    <li id="button_front" class="ontop"><a href='#' onclick="show_front();">Front</a></li>
+    {% if image_back %}
+    <li id="button_back"><a href='#' onclick="show_back();">Back</a></li>
+    {% endif %}
+</ul>
+<div id="flip-container">
+    <div id="flip-card">
+        <div id='cover_front' class="ontop face">
+            <a href='{{ image }}'><img height="480px" src="{{ image }}" /></a>
+        </div>
+        {% if image_back %}
+        <div id='cover_back' class="face">
+            <a href='{{ image_back }}'><img height="480px" src="{{ image_back }}" /></a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% if file_url or url %}
+    <video id="vid" class="player" x-webkit-airplay=allow controls>
+{% if url %}
+        <source src="{{ url }}">
+{% endif %}
+{% if file_url %}
+        <source src="{{ file_url }}" type="video/mp4">
+{% endif %}
+    </video>
+{% else %}
+    <div class="player">
+        <p>Video not yet available</p>
+    </div>
+{% endif %}
+
+{% if media.notes %}
+    <div class="notes">
+        <p>Notes: {{ media.notes }}</p>
+    </div>
+{% endif %}
+
+<table class="properties" border="0" cellspacing="5" cellpadding="5">
+    <tr><th>Tags</th>
+        <td>
+        <ul class="tag">
+        {% for tag in tags %}
+        <li class="tag"><a href="/tag/{{tag.name|slugify}}/">{{tag.name}}</a></li>
+        {% endfor %}
+        </ul>
+    </td>
+    </tr>
+    {% for label,value in fields %}
+        <tr><th>{{ label }}</th><td>{{ value|linebreaks }}</td></tr>
+    {% endfor %}
+</table>
+
+<hr>
+<h2>Screening History</h2>
+<table class="screenings" width="80%">
+    {% load localtime %}
+    <tr>
+        <th>Time</th>
+        <th>Viewer</th>
+        <th>Start Position</th>
+        <th>End Position</th>
+    </tr>
+    {% for s in screenings %}
+        <tr class="{% cycle 'odd' 'even' %}" >
+            <td>{{ s.timestamp|localtime|date:"SHORT_DATETIME_FORMAT" }}</td>
+            <td>{{ s.user.username }}</td>
+            <td><a href='#' onclick=setCurrentTime({{ s.start }})>{{ s.start|floatformat:-1 }}</a></td>
+            <td><a href='#' onclick=setCurrentTime({{ s.stop }})>{{ s.stop|floatformat:-1 }}</a></td>
+        </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{% extends "main/base.html" %}
+
+{% block title %}
+    Page Not Found
+{% endblock %}
+
+{% block content %}
+    <div id="main">
+        <h3>The page you are looking for at "{{ request_path }}" can not be found.
+            Please check the URL and try again.</h3>
+    </div><!-- end main -->
+{% endblock %}

@@ -1,0 +1,12 @@
+<p>You searched for: <strong>{{ query_string }}</strong></p>
+
+{% if found_entries %}
+    <p>Found {{ found_entries|length }} video{{ found_entries|pluralize }}.</p>
+    <ul>
+        {% for m in found_entries %}
+        <li>{{ m.title }} - {{ m.subtitle }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No videos matched your search criteria.</p>
+{% endif %}

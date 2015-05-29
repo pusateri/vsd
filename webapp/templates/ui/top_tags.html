@@ -1,0 +1,30 @@
+
+{% extends 'base.html' %}
+
+{% block pagetitle  %}Movies{% endblock %}
+{% block primary %}
+<div>
+    {% load thumbnail %}
+    {% if recent %}
+	<p>Recent</p>
+	{% for object in recent %}
+            <span class="gallery">
+                <a href="/movies/{{ object.locationSingularString }}/"><img src="{{ object|thumbnail }}"/></a>
+            </span>
+	{% endfor %}
+    {% endif %}
+    <hr>
+    {% for key,entries in tag_dict.items %}
+        <p>{{key}}</p>
+        <br>
+        {% for object in entries %}
+            <span class="gallery">
+                <a href="/movies/{{ object.locationSingularString }}/"><img src="{{ object|thumbnail }}"/></a>
+            </span>
+        {% endfor %}
+        <span class="more-button"><a href="/tag/{{key|slugify}}/">More</a></span>
+        <hr>
+    {% endfor %}
+</div>
+{% endblock %}
+

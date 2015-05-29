@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block pagetitle  %}Screenings{% endblock %}
+{% block primary %}
+<h2>Screening History</h2>
+<table class="screenings" width="80%">
+    {% load localtime %}
+    <tr>
+        <th>Time</th>
+        <th>Viewer</th>
+        <th>Title</th>
+        <th>Start Position</th>
+        <th>End Position</th>
+    </tr>
+    {% for s in screenings %}
+        <tr class="{% cycle 'odd' 'even' %}" >
+            <td>{{ s.timestamp|localtime|date:"SHORT_DATETIME_FORMAT" }}</td>
+            <td>{{ s.user.username }}</td>
+            <td><a href='/movies/{{ s.media.locationSingularString }}'>{{ s.media.title }}</a></td>
+            <td>{{ s.start|floatformat:-1 }}</td>
+            <td>{{ s.stop|floatformat:-1 }}</td>
+        </tr>
+    {% endfor %}
+</table>
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang="en">
+    <head>
+        <style>
+body {
+    font-family: helvetica, sans-serif;
+    color: #555;
+}
+a {
+    text-decoration: none;
+}
+#nav {
+    border-top: 1px solid #99CC33;
+    border-left: 1px solid #99CC33;
+    width: 170px;
+    float: right;
+}
+ul {
+    list-style-type: none;
+    padding: 10px;
+    margin: 10px;
+    border: 10px;
+    text-align: center;
+}
+li {
+    background-color: #DDD;
+    border-radius: 15px;
+    text-align: center;
+    padding: 1px;
+    margin: 2px;
+    
+}
+li a {
+    border-radius: 15px;
+    font-size: 10pt;
+    color: #555;
+}
+li:hover {
+    background-color: #FFF;
+    border-width: 1px;
+    border-style: solid;
+}
+table {
+    width: 82%;
+}
+.even {
+    background-color: #DDD;
+}
+th {
+    border-bottom: 2px solid #555;
+}
+h1 {
+    text-align: center;
+    font-size: 24pt;
+}
+h2 {
+    text-align: left;
+    font-size: 18pt;
+}
+.gallery img {
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-top: 3px;
+    margin-bottom: 12px;
+    -webkit-box-reflect: below 2px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.9, transparent), to(rgba(255, 255, 255, 0.3)));
+}
+/*
+#home {
+    width: 10%;
+}
+*/
+#auth {
+    position: absolute;
+    right: 0px;
+    font-size: 12pt;
+}
+.username {
+    color: red;
+    margin-right: 10px;
+}
+#search {
+    position: absolute;
+    right: 0px;
+    margin-right: 10px;
+}
+#movie-search {
+    width: 200px;
+}
+.more-button {
+    width: 100px;
+    height: 100px;
+    background-color: #AAA;
+}
+.more-button a {
+    color: #555;
+}
+
+/*
+#search label {
+    visibility: hidden;
+}
+<label for="movie-search">Search:</label> */
+        </style>
+        <title>NRCA - {%block pagetitle %}{% endblock %}</title>
+    </head>
+    <body>
+        <div id="auth">
+            <p>username: <span class="username">{{ user }}</span></p>
+        </div>
+        <div id="home"><a href="/"><img src="{{ media_url }}home48.png"/></a></div>
+        <div id="search">
+            <form id="search-form" action="/search/" method="get">
+                <input type="text" id="movie-search" name="q" size="18" value="" />
+                <input type="submit" id="movie-button" value="Search" />
+            </form>
+        </div>
+        <div id="header"><h1>NRCA Video Library</h1></div>
+        <div id="nav">
+            <ul>
+                <li><a href="/list">All</a></li>
+                {% load tag_cloud %}
+                {% tag_cloud_for_model ui.Media as tags with steps=6 min_count=4 distribution=log %}
+                {% for tag in tags %}
+                    <li><a href="/tag/{{tag.name|slugify}}/">{{tag.name}}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div id="content">
+            <div id="primary">
+                <h1>{% block title %}{% endblock %}</h1>
+                {% block primary %}{% endblock %}
+            </div>
+            <div id="secondary">
+            <div>
+        </div>
+    </body>
+</html>
+

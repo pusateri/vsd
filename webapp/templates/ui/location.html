@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block pagetitle  %}Movie List{% endblock %}
+{% block primary %}
+<h2>
+    {{movie_list|length}} Video{{movie_list|length|pluralize}}
+    {% if query_string %} for search: {{ query_string }}{% endif %}
+</h2>
+    <table>
+        <tr>
+            <th>Location</th>
+            <th>Title</th>
+            <th>Length (Min.)</th>
+            <th>Release Date</th>
+        </tr>
+        {% for object in movie_list %}
+            <tr class="{% cycle 'odd' 'even' %}" >
+                <td>{{ object.locationSingularString }}</td>
+                <td><a href="/movies/{{ object.locationSingularString }}/">{{ object }}</a></td>
+                <td>{{ object.minutes }}</td>
+                <td>{{ object.theatricalDate|date:"F Y" }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

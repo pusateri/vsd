@@ -1,0 +1,21 @@
+
+{% extends 'base.html' %}
+
+{% block pagetitle  %}{{tag}}{% endblock %}
+{% block primary %}
+    <h2>{{entries|length}} Video{{entries|length|pluralize}} with tag: {{tag}}</h2>
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Length (Min.)</th>
+            <th>Release Date</th>
+        </tr>
+        {% for object in entries %}
+            <tr class="{% cycle 'odd' 'even' %}" >
+                <td><a href="/movies/{{ object.locationSingularString }}/">{{ object.title }}</a></td>
+                <td>{{ object.minutes }}</td>
+                <td>{{ object.publishDate|date:"F Y" }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
