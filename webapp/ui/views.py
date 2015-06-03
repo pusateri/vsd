@@ -129,7 +129,7 @@ def top_tags(request):
     else:
         local_user = 'foo'
     # look up what the user has been playing recently
-    medias = Screening.objects.filter(user__username=local_user).order_by('-timestamp').values_list('media', flat=True).distinct()
+    medias = Screening.objects.filter(user__username=local_user).order_by('-timestamp').values_list('media', flat=True).distinct()[:30]
     recent = Media.objects.filter(uuidString__in=[str(m) for m in medias])
 
     # figure out the most common tags
@@ -149,7 +149,7 @@ def top_tags(request):
     tag_list = sorted(tag_count.iteritems(), key=itemgetter(1), reverse=True)
     pool = []
     tag_dict = {}
-    for tag_name, count in tag_list:
+    for tag_name, count in tag_list[:30]:
         tag_object = Tag.objects.get(name=tag_name)
         entries = TaggedItem.objects.get_by_model(Media, tag_object).order_by('?')[:4]
         if len(entries) > 3:
